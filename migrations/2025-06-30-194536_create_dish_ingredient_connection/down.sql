@@ -1,0 +1,1 @@
+DROP TABLE dish_ingredient_conn
