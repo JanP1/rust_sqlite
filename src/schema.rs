@@ -2,14 +2,14 @@
 
 diesel::table! {
     customers (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         customer_name -> Text,
     }
 }
 
 diesel::table! {
     dish_ingredient_conn (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         dish_id -> Integer,
         ingredient_id -> Integer,
         amount -> Nullable<Float>,
@@ -35,7 +35,7 @@ diesel::table! {
 
 diesel::table! {
     orders (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         order_id -> Integer,
         client_id -> Integer,
         dish_id -> Integer,
