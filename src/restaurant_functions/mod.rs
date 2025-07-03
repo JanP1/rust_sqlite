@@ -1,6 +1,8 @@
-use diesel::prelude::*;
+use crate::model::Customer;
 use dotenvy::dotenv;
+use diesel::prelude::*;
 use std::env;
+use diesel::result::Error;
 
 pub fn establish_connection() -> SqliteConnection {
     dotenv().ok();
@@ -10,8 +12,13 @@ pub fn establish_connection() -> SqliteConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-pub fn place_order() {
+pub fn load_customers(connection: &mut SqliteConnection) -> Result<Vec<Customer>, Error> {
+    use crate::schema::customers::dsl::*;
 
-    println!("Hello");
+    let results = customers
+        .limit(5)
+        .select(Customer::as_select())
+        .load(connection)?; 
 
+    Ok(results)
 }

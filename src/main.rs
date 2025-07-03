@@ -1,23 +1,24 @@
-use sql_connection::model::Customer;
 
-use sql_connection::restaurant_functions;
-use diesel::prelude::*;
+use sql_connection::{restaurant_functions::{self, load_customers}};
 
 
 fn main() {
-    use sql_connection::schema::customers::dsl::*;
 
     let connection = &mut restaurant_functions::establish_connection();
-    let results = customers
-        .limit(5)
-        .select(Customer::as_select())
-        .load(connection)
-        .expect("Error loading posts");
+    match load_customers(connection) {
+        Ok(custom) => {
+            println!("Displaying {} customers", custom.len());
+                for customer in custom {
+                    println!("{}", customer.customer_name);
+                    println!("{}", customer.id);
+                    println!("-----------\n");
+                }
 
-    println!("Displaying {} customers", results.len());
-    for customer in results {
-        println!("{}", customer.customer_name);
-        println!("{}", customer.id);
-        println!("-----------\n");
+        }
+        Err(e) => {
+            println!("Error loading customers {}", e);
+        }
+        
     }
+
 }
