@@ -9,7 +9,7 @@ pub struct Customer {
 }
 
 
-#[derive(Queryable, Selectable)]
+#[derive(Clone, Queryable, Selectable)]
 #[diesel(table_name = crate::schema::dishes)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Dish {

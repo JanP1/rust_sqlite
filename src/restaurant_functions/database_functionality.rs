@@ -53,25 +53,29 @@ pub fn get_order_by_id(connection: &mut SqliteConnection, searched_order_id: i32
         .select(Order::as_select())
         .load(connection)?; 
 
+    let mut dishes_in_order: Vec<Dish> = vec![];
+
     for ord in results {
-        println!("Dish {}", ord.dish_id);
-        println!("-----------\n");
+        match  get_dish_by_id(connection, ord.dish_id)
+        {
+            Ok(dish_exists) =>{dishes_in_order.push(dish_exists[0].clone())}
+            Err(e) => {println!("{}", e);}
+            
+        }
+
     }
-
-    let dish = Dish {
-
-        id: 12,
-        name: "Dish1".to_string(),
-        preparation_time: 23,
-    };
 
     let full_order = FullOrder{
         customer_name: "John Doe".to_string(),
-        dishes: vec![dish],
+        dishes: dishes_in_order,
         order_id: 5,
         
 
     };
+
+    for dish_in_ord in &full_order.dishes {
+        println!("Dish {}", dish_in_ord.name);
+    }
     
     Ok(full_order)
 }
