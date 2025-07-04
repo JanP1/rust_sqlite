@@ -30,3 +30,23 @@ pub struct Ingredient {
 
 
 
+
+#[derive(Queryable, Selectable)]
+#[diesel(table_name = crate::schema::orders)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct Order {
+    pub id: i32,
+    pub order_id: i32,
+    pub customer_id: i32,
+    pub dish_id: i32,
+}
+
+
+// ====================================================
+
+
+pub struct FullOrder {
+    pub order_id: i32,
+    pub customer_name: String,
+    pub dishes: Vec<Dish>,
+}

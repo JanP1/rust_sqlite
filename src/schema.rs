@@ -37,13 +37,14 @@ diesel::table! {
     orders (id) {
         id -> Integer,
         order_id -> Integer,
-        client_id -> Integer,
+        customer_id -> Integer,
         dish_id -> Integer,
     }
 }
 
 diesel::joinable!(dish_ingredient_conn -> dishes (dish_id));
 diesel::joinable!(dish_ingredient_conn -> ingredients (ingredient_id));
+diesel::joinable!(orders -> customers (customer_id));
 diesel::joinable!(orders -> dishes (dish_id));
 
 diesel::allow_tables_to_appear_in_same_query!(

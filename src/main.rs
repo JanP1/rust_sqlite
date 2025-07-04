@@ -1,24 +1,16 @@
-
-use sql_connection::{restaurant_functions::{self, load_customers}};
+use sql_connection::restaurant_functions::database_functionality::{self, get_order_by_id};
 
 
 fn main() {
 
-    let connection = &mut restaurant_functions::establish_connection();
-    match load_customers(connection) {
-        Ok(custom) => {
-            println!("Displaying {} customers", custom.len());
-                for customer in custom {
-                    println!("{}", customer.customer_name);
-                    println!("{}", customer.id);
-                    println!("-----------\n");
-                }
+    let connection = &mut database_functionality::establish_connection();
+    let _ = match  get_order_by_id(connection, 3002){
+        Ok(_) => {
 
         }
         Err(e) => {
-            println!("Error loading customers {}", e);
-        }
-        
-    }
+            println!("{}", e);
+        }       
+    };
 
 }
