@@ -1,8 +1,11 @@
-use crate::{model::{Customer, Dish, FullOrder, Order}, schema::{ orders::dsl::*}};
+use crate::{model::{Customer, Dish, FullOrder, Ingredient, Order}, schema::orders::dsl::*};
 use dotenvy::{dotenv};
 use diesel::prelude::*;
 use std::env;
 use diesel::result::Error;
+
+// ========================================================================
+// ====================== Connecting to the database ======================
 
 pub fn establish_connection() -> SqliteConnection {
     dotenv().ok();
@@ -11,6 +14,9 @@ pub fn establish_connection() -> SqliteConnection {
     SqliteConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
+
+// ========================================================================
+// ========================================================================
 
 pub fn load_customers(connection: &mut SqliteConnection) -> Result<Vec<Customer>, Error> {
 
@@ -58,7 +64,13 @@ pub fn get_order_by_id(connection: &mut SqliteConnection, searched_order_id: i32
     for ord in results {
         match  get_dish_by_id(connection, ord.dish_id)
         {
-            Ok(dish_exists) =>{dishes_in_order.push(dish_exists[0].clone())}
+            Ok(dish_exists) =>{
+                if let Some(first_dish) = dish_exists.get(0) {
+                    dishes_in_order.push(first_dish.clone());
+                } else {
+                    println!("No dish found with id: {}", ord.dish_id);
+                }
+            }
             Err(e) => {println!("{}", e);}
             
         }
@@ -78,6 +90,31 @@ pub fn get_order_by_id(connection: &mut SqliteConnection, searched_order_id: i32
     }
     
     Ok(full_order)
+}
+
+
+
+pub fn get_ingredient_by_id(connection: &mut SqliteConnection, searched_ingredient_id: i32) -> Result<Vec<Ingredient>, Error> {
+    use crate::schema::ingredients::dsl::*;
+    let results = ingredients
+        .filter(id.eq(searched_ingredient_id))
+        .limit(1)
+        .select(Ingredient::as_select())
+        .load(connection)?; 
+
+    Ok(results)
+}
+
+
+pub fn get_ingredient_by_name(connection: &mut SqliteConnection, searched_name: &str) -> Result<Vec<Ingredient>, Error> {
+    use crate::schema::ingredients::dsl::*;
+    let results = ingredients
+        .filter(name.eq(searched_name))
+        .limit(1)
+        .select(Ingredient::as_select())
+        .load(connection)?; 
+
+    Ok(results)
 }
 
 
