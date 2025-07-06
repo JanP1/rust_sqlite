@@ -1,6 +1,6 @@
 use crate::{model::{Customer, Dish, FullOrder, Ingredient, Order}, schema::orders::dsl::*};
 use dotenvy::{dotenv};
-use diesel::prelude::*;
+use diesel::{insert_into, prelude::*};
 use std::env;
 use diesel::result::Error;
 
@@ -118,5 +118,17 @@ pub fn get_ingredient_by_name(connection: &mut SqliteConnection, searched_name: 
 }
 
 
+pub fn add_ingredient(connection: &mut SqliteConnection, ingredient_name: &str, ingredient_kcal: i32) -> Result<String, String> {
+    use crate::schema::ingredients::dsl::*;
 
+    let _ = insert_into(ingredients)
+        .values((
+            name.eq(ingredient_name),
+            kcal.eq(ingredient_kcal)
+
+        ))
+        .execute(connection);
+
+    Ok("Added ingredient".to_string())
+}
 
