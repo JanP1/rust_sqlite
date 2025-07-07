@@ -1,4 +1,4 @@
-use sql_connection::{ restaurant_functions::database_functionality::{self}};
+use sql_connection::{restaurant_functions::database_functionality::{self, get_table_length}};
 
 fn main() {
 
@@ -9,6 +9,15 @@ fn main() {
     //     Err(e) => {println!("Error while creating ingredient. {}", e);}
     //
     // };
+    
+    let _ = match get_table_length(connection, "ingredients") {
+        
+        Ok(ingr_len) => {println!("Ingredient length {}", ingr_len);}
+        Err(e) => {println!("Error getting table length {}", e);}
+
+    };
+
+
     let ingredient_name : &str = "Ingredient1";
     let _ = match  database_functionality::get_ingredient_by_name(connection, ingredient_name){
         Ok(ingredient) => {
