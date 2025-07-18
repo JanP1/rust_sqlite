@@ -132,3 +132,11 @@ pub fn add_ingredient(connection: &mut SqliteConnection, ingredient_name: &str, 
     Ok("Added ingredient".to_string())
 }
 
+
+// Getting length of table
+
+
+pub fn get_num_of_rows(connection: &mut SqliteConnection){
+
+}
+
