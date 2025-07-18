@@ -3,6 +3,9 @@ use dotenvy::{dotenv};
 use diesel::{insert_into, prelude::*};
 use std::env;
 use diesel::result::Error;
+use diesel::sql_query;
+use diesel::sql_types::BigInt;
+
 
 // ========================================================================
 // ====================== Connecting to the database ======================
@@ -132,11 +135,20 @@ pub fn add_ingredient(connection: &mut SqliteConnection, ingredient_name: &str, 
     Ok("Added ingredient".to_string())
 }
 
+// =============================================================
+// =============== Getting length of table =====================
 
-// Getting length of table
-
-
-pub fn get_num_of_rows(connection: &mut SqliteConnection){
-
+#[derive(QueryableByName, Debug)]
+struct Count {
+    #[diesel(sql_type = BigInt)]
+    count: i64,
+}
+pub fn get_table_length(conn: &mut SqliteConnection, table_name: &str) -> Result<i64, Error> {
+    let query = format!("SELECT COUNT(*) as count FROM {}", table_name);
+    let result: Count = sql_query(query).get_result(conn)?;
+    Ok(result.count)
 }
 
+
+// =============================================================
+// =============================================================
