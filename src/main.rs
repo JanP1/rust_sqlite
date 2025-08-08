@@ -1,6 +1,7 @@
 use sql_connection::{restaurant_functions::database_functionality::{self, get_table_length}};
 
 fn main() {
+    println!("----");
 
     let connection = &mut database_functionality::establish_connection();
 
